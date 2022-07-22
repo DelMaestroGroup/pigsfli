@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/512860527.svg)](https://zenodo.org/badge/latestdoi/512860527)
+
 # Documentation  
 
 ## Introduction 

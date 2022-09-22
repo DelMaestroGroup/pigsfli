@@ -46,7 +46,7 @@ make
 sudo make install
   ```
 
-As above, and with further details below, but you should consider using the following CMake options with the appropriate value instead of xxx :
+The following are some CMake options that can be edited in before compilation, where xxx should be replaced with the appropriate values:
 
 - `-D NDIM=1|2|3` the number of spatial dimensions
 - `-D CMAKE_C_COMPILER=xxx` equal to the name of the C99 Compiler you wish to use (or the environment variable `CC`)

@@ -223,4 +223,14 @@ SWAP Recede Tail: 28457/29492
 Elapsed time: 1.74691 seconds
 ```
 
+### Output explanation
+
+In Stage (1/3), histograms of the total particle number distribution are shown, where each of the asterisks (*) represents a normalized count. For canonical ensemble simulations, like the one shown above, the only particle numbers visited are $N-1$, $N$, and $N+1$, where $N$ is the target number of particles. A grand canonical simulation will show histograms with more particle numbers than these. Once the peak of the distribution is at $N$, and it's at least 33% larger than the next largest sector, we proceed to the "fine tuning eta" stage. Here, eta is either shrunk or augmented until we reach the desired percentage of configurations with no worms present (currently, we set this window between 40 and 45%).
+
+Stage (2/3), the code is ran without taking any measurement as a en equilibration step. The number of equilibration steps are currently determined by the sweeps parameter from the command line.
+
+Finally, Stage (3/3) is where measurements are performed and samples collected. Once the desired number of samples are collected, the simulation stops. Near the bottom of the terminal output above, the number of times that each of the updates is accepted and proposed are shown as a fraction. The number of times that the update is accepted is shown in the numerator, whereas the times that it was proposed is shown in the denominator.
+
+The total run time of equilibration and Main Monte Carlo loops is shown at the bottom of the output, in seconds.
+
 After this has been completed, you can analyze the results of your run using the scripts in the https://github.com/DelMaestroGroup/papers-code-pigsfli.

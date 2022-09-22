@@ -59,8 +59,8 @@ The following are some CMake options that can be edited in before compilation, w
 - `-E env CXXFLAGS="xxx"` add additional compiler flags
 - `-E env LDFLAGS="xxx"` add additional linker flags
 
-Executables will be installed to `CMAKE_INSTALL_PREFIX` location or if the install is skiped will be located in `build/pigsfli`.
-Executables produced are `pigsfli.e`, `pigsflid.e` for `CMAKE_BUILD_TYPE=Release|Debug` respectively.
+Executables will be installed to the `CMAKE_INSTALL_PREFIX` location or if the install step is skipped, they will be located in `build/pigsfli`.
+The executable produced will be `pigsfli.e`. Or `pigsflid.e` for `CMAKE_BUILD_TYPE=Release|Debug`.
 
 If you run into problems, failures with linking etc., common errors may include
 not properly setting your `LD_LIBRARY_PATH` or not starting from a clean build
@@ -72,9 +72,6 @@ In order to get a quick idea of the options which the code accepts type:
 ```bash
 pigsfli.e --help
 ```
-
-The code requires various combinations of these options to run, and the help message should give
-you an idea about which ones are mandatory.
 
 ### Quick Start 
 

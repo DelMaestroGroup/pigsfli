@@ -14,6 +14,7 @@ class RNG
  	{
  	public:
  	
+ 	virtual ~RNG(){};
 	virtual void seed(){};
 	virtual void seed( const uint32 oneSeed ){};
 	virtual uint32 randInt( const uint32 n ){return 0;}

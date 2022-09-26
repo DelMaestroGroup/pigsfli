@@ -595,7 +595,7 @@ int main(int argc, char** argv){
               }
 
             // Measure the total number of particles
-            if (m_pre%(sweep*measurement_frequency)==0 && m_pre>=0.25*sweeps_pre){
+            if (m_pre >= sweeps_pre/4 && m_pre%(sweep*measurement_frequency)==0){
                 measurement_attempts[0]+=1;
                 if (head_idx[0]==-1 && tail_idx[0]==-1){
                     N_data.push_back(N_beta[0]);
@@ -1242,8 +1242,8 @@ int main(int argc, char** argv){
         
 /*----------------------------- Measurements ---------------------------------*/
             
-        if (m%(sweep*measurement_frequency)==0
-            && (m>=sweeps*1.00 || restart)){
+        if ((m>=sweeps*1.00 || restart) &&
+            m%(sweep*measurement_frequency)==0){
             
             // Reset iteration index to avoid overflow error
             m = sweeps*2.00; // might need mult by 1.00 (b.c overflow)

@@ -7631,7 +7631,7 @@ void tau_resolved_diagonal_energy(vector<Kink> &paths,
         current=i;
         tau=paths[current].tau;
         n_i=paths[current].n;
-        for (int j=0; j<measurement_centers.size(); j++){
+        for (std::size_t j=0; j<measurement_centers.size(); j++){
             measurement_center=measurement_centers[j];
             while (tau<=measurement_center && current!=-1){
                 n_i=paths[current].n;
@@ -7682,7 +7682,7 @@ void tau_resolved_kinetic_energy(vector<Kink> &paths,
     for (int i=M; i<num_kinks; i++){ // Note: the tau=0 kinks not counted
         tau = paths[i].tau;
 
-        for (int j=0; j<measurement_centers.size(); j++){
+        for (std::size_t j=0; j<measurement_centers.size(); j++){
             measurement_center=measurement_centers[j];
 
             if (tau>=measurement_center-window_width/2.0 &&

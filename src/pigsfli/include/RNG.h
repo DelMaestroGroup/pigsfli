@@ -2,6 +2,8 @@
 #define RNG_H
 #include <random>
 #include <memory>
+#include <optional>
+#include <functional>
 #include "MersenneTwister.h"
 #include "pcg_random.hpp"
 #include "boost/random.hpp"
@@ -149,79 +151,49 @@ class MTFromBOOST:public RNG
 	
 	};
 
+/**
+This functions selects whether to call the constructor with a seed or not depending on 
+whether the optional seed s is given
+
+@tparam T the type that we want to create
+@param s an optional seed
+@return An object of type T.
+*/
+template <typename T>
+inline std::unique_ptr<RNG> lambdatemplate(std::optional<uint32> s = std::nullopt)
+{
+    if (s)
+	return std::make_unique<T>(*s);
+    else
+	return std::make_unique<T>();
+};
+
+// Here we set up a jump table such that we can jump upon an integer to the respective function.
+static std::function<std::unique_ptr<RNG>(std::optional<uint32>) > typeswitcher[] {
+    [](std::optional<uint32> s = std::nullopt){return lambdatemplate<MTFromPIMC>(s);},
+    [](std::optional<uint32> s = std::nullopt){return lambdatemplate<MTFromSTL>(s);},
+    [](std::optional<uint32> s = std::nullopt){return lambdatemplate<MTFromBOOST>(s);},
+    [](std::optional<uint32> s = std::nullopt){return lambdatemplate<MTFromPCG>(s);}
+    };
+
 /**************************************************************************/
     inline std::unique_ptr<RNG> GetRNG( int sourceID )
     {
-          	
-        std::unique_ptr<RNG> randomPtr;
-
-   	    if (sourceID == 1)  {
-            randomPtr = std::make_unique<MTFromPIMC>();
-
-        	}
-
-		else if (sourceID == 2)  {
-        	randomPtr = std::make_unique<MTFromSTL>();
-
-        	}
-        		
-		else if (sourceID == 3)  {
-        	randomPtr = std::make_unique<MTFromBOOST>();
-
-        	}
-        	        		
-		else if (sourceID == 4)  {
-        	randomPtr = std::make_unique<MTFromPCG>();
-
-        	}      
-        
-        return randomPtr ;
+	return typeswitcher[sourceID - 1] (std::optional<uint32>() );
     };
 
 
     inline std::unique_ptr<RNG> GetRNG( int sourceID, const uint32 seed  )
-        
     {
-          	
-  	    std::unique_ptr<RNG> randomPtr;
-
-   		if (sourceID == 1)  {
-        		
-            randomPtr = std::make_unique<MTFromPIMC>(seed);
-        		
-            }
-
-		else if (sourceID == 2)  {
-        
-            randomPtr = std::make_unique<MTFromSTL>(seed);
-
-        	}
-        		
-		else if (sourceID == 3)  {
-
-        	randomPtr = std::make_unique<MTFromBOOST>(seed);
-
-        	}    
-        	    		
-		else if (sourceID == 4)  {
-        	randomPtr = std::make_unique<MTFromPCG>(seed);
-
-        	}        
-        
-       return randomPtr ;
+	return typeswitcher[sourceID - 1] (seed);
     };
 
 //###################################################
-      inline RNG GetRNGFromPtr( RNG &random )
+    inline RNG GetRNGFromPtr( RNG &random )
     {
         return random ;
     };
 
 /************************************************************/  
- 
-    
-    
-
 
 #endif
-

@@ -193,7 +193,7 @@ int main(int argc, char** argv){
 
     // mu-calibration variables
     bool not_equilibrated;
-    double mu_initial,N_hist_sum,P_N_peak,mu_right,mu_left,N_flats_mean;
+    double N_hist_sum,P_N_peak,mu_right,mu_left,N_flats_mean;
     double Z_frac,N_mean_pre; // used only in eta-equilibration
     bool N_target_in_bins;
     vector<int> N_data,N_hist,N_bins;
@@ -294,14 +294,14 @@ int main(int argc, char** argv){
     // Adjacency matrix
     build_hypercube_adjacency_matrix(L,D,boundary_condition,adjacency_matrix);
     total_nn=0;
-    for (int i=0;i<adjacency_matrix[0].size();i++){total_nn+=1;}
+    for (size_t i=0;i<adjacency_matrix[0].size();i++){total_nn+=1;}
     
     // Initialize energies
     diagonal_energy = 0.0;
     kinetic_energy = 0.0;
     
     // Replicated trackers
-    for (int r=0;r<num_replicas;r++){
+    for (size_t r=0;r<num_replicas;r++){
         num_kinks.push_back(M);
         N_tracker.push_back(N);
         head_idx.push_back(-1);
@@ -313,7 +313,7 @@ int main(int argc, char** argv){
         
         // Initialize vector containing indices of last kinks at each site
         last_kinks.push_back(vector<int> (M,-1));
-        for (int i=0;i<M;i++){last_kinks[r][i]=i;}
+        for (size_t i=0;i<M;i++){last_kinks[r][i]=i;}
         
         // Worldlines data structure
         paths.push_back(create_paths(initial_fock_state,M,r));
@@ -325,12 +325,12 @@ int main(int argc, char** argv){
     }
     
     // just initializing
-    for (int i=0; i<m_A; i++){
+    for (size_t i=0; i<m_A; i++){
         swap_kinks.push_back(0);
     }
 
     // initializing n_A
-    for (int i=0; i<num_replicas; i++){
+    for (size_t i=0; i<num_replicas; i++){
         n_A.push_back(vector<int> (m_A,0));
     }
 
@@ -339,7 +339,7 @@ int main(int argc, char** argv){
     measurement_plus_minus=0.10*beta;
     bin_size=result["bin-size"].as<int>();
     measurement_centers=get_measurement_centers(beta);
-    for (int i=0;i<M;i++){
+    for (size_t i=0;i<M;i++){
         fock_state_at_slice.push_back(0);
     }
     writing_ctr = 0;
@@ -350,7 +350,7 @@ int main(int argc, char** argv){
 /*------------------- Try drawing a pretty welcome message -------------------*/
 
 // cout << "sub-sites: ";
-// for (int i=0; i<sub_sites.size(); i++){
+// for (size_t i=0; i<sub_sites.size(); i++){
 //     cout << sub_sites[i] << " ";
 // }
 // cout << endl;
@@ -396,7 +396,6 @@ int main(int argc, char** argv){
     bool eta_fine_tuning_complete = false;
     
     not_equilibrated=true;
-    mu_initial=mu;
     dummy_counter=0;
 
     if (beta>=1.0){sweeps_pre*=(beta*M);}
@@ -409,7 +408,7 @@ int main(int argc, char** argv){
     
     if(!restart){
     // Iterate until particle distribution P(N) is peaked at target N
-    for (int stage=0;stage<2;stage++){ // stage0:mu,eta stage1:eta fine tuning
+    for (size_t stage=0;stage<2;stage++){ // stage0:mu,eta stage1:eta fine tuning
         
         // Do not perform mu,eta equilibration for restarted simulation
         if (restart){break;}
@@ -427,7 +426,7 @@ int main(int argc, char** argv){
         N_beta.clear();
         last_kinks.clear();
         paths.clear();
-        for (int r=0;r<num_replicas;r++){
+        for (size_t r=0;r<num_replicas;r++){
             num_kinks.push_back(M);
             N_tracker.push_back(N);
             head_idx.push_back(-1);
@@ -436,7 +435,7 @@ int main(int argc, char** argv){
             N_beta.push_back(N);
             
             last_kinks.push_back(vector<int> (M,-1));
-            for (int i=0;i<M;i++){last_kinks[r][i]=i;}
+            for (size_t i=0;i<M;i++){last_kinks[r][i]=i;}
             
             paths.push_back(create_paths(initial_fock_state,M,r));
         }
@@ -620,7 +619,7 @@ int main(int argc, char** argv){
 
         // Generate the support of the distribution & initialize the histogram
         N_target_in_bins=false;
-        for (int i=N_min;i<=N_max;i++){
+        for (size_t i=N_min;i<=N_max;i++){
             N_bins.push_back(i);
             N_hist.push_back(0);
             P_N.push_back(0);
@@ -631,7 +630,7 @@ int main(int argc, char** argv){
         N_idx = N-N_min;
 
         // Fill out the histogram
-        for (int i=0;i<N_data.size();i++){
+        for (size_t i=0;i<N_data.size();i++){
             N_hist[N_data[i]-N_min]+=1;
             N_hist_sum+=1.0;
         }
@@ -639,7 +638,7 @@ int main(int argc, char** argv){
         // Build the normalized probability distribution P(N) & find its peak
         peak_idx=0;
         P_N_peak=P_N[peak_idx];
-        for (int i=0;i<P_N.size();i++){
+        for (size_t i=0;i<P_N.size();i++){
             P_N[i]=N_hist[i]/N_hist_sum;
             if (P_N[i]>P_N_peak){
                 peak_idx=i;
@@ -651,9 +650,9 @@ int main(int argc, char** argv){
         cout << "mu: " << mu;
         cout << " eta: " << eta << " Z-frac: " << Z_frac*100 << "%" << endl;
         cout << "N     P(N)"<<endl;
-        for (int i=0;i<N_bins.size();i++){
+        for (size_t i=0;i<N_bins.size();i++){
             cout << setw(6) << left << N_bins[i];
-            for (int j=0;j<=static_cast<int>(100*P_N[i]);j++){
+            for (size_t j=0;j<=static_cast<int>(100*P_N[i]);j++){
                 cout<<"*";
             }
             cout<<endl;
@@ -800,7 +799,7 @@ int main(int argc, char** argv){
             
             if (!no_accessible){
                 // Create filenames of SWAP histograms for each partition size mA
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     SWAPn_histogram_names.push_back(
                     to_string(D)+"D_"+to_string(L)+"_"+
                     to_string(N)+"_"+to_string(l_A)+"_"+
@@ -811,7 +810,7 @@ int main(int argc, char** argv){
                 }
                 
                 // Create filenames of P(n) for each partition size mA
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_names.push_back(
                     to_string(D)+"D_"+to_string(L)+"_"+
                     to_string(N)+"_"+to_string(l_A)+"_"+
@@ -822,7 +821,7 @@ int main(int argc, char** argv){
                 }
                 
                 // Create filenames of P(n)^2? for each partition size mA
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_squared_names.push_back(
                     to_string(D)+"D_"+to_string(L)+"_"+
                     to_string(N)+"_"+to_string(l_A)+"_"+
@@ -844,7 +843,7 @@ int main(int argc, char** argv){
             
             if (!no_accessible){
                 // Create filenames of SWAP histograms for each n-Sector
-                for (int i=0; i<=N; i++){
+                for (size_t i=0; i<=N; i++){
                     SWAPn_histogram_names.push_back(
                     to_string(L)+"_"+to_string(N)+"_"+
                     to_string(l_A)+"_"+to_string(D)+"D_"+
@@ -862,19 +861,19 @@ int main(int argc, char** argv){
 
             if (!no_accessible){
                 // Open mA-sector resolved local particle number distribution files
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_file.open(Pn_names[i-1]);
                     Pn_files.push_back(std::move(Pn_file));
                 }
                 
                 // Open...
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_squared_file.open(Pn_squared_names[i-1]);
                     Pn_squared_files.push_back(std::move(Pn_squared_file));
                 }
                 
                 // Open...
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     SWAPn_histogram_file.open(SWAPn_histogram_names[i-1]);
                     SWAPn_histogram_files.push_back(std::move(
                                                        SWAPn_histogram_file));
@@ -893,21 +892,21 @@ int main(int argc, char** argv){
 
             if (!no_accessible){
                 // Open mA-sector resolved local particle number distribution files
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_file.open(Pn_names[i-1],
                                  ios::out | ios::app);
                     Pn_files.push_back(std::move(Pn_file));
                 }
                 
                 // Open...
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     Pn_squared_file.open(Pn_squared_names[i-1],
                                          ios::out | ios::app);
                     Pn_squared_files.push_back(std::move(Pn_squared_file));
                 }
                 
                 // Open...
-                for (int i=1; i<=m_A; i++){
+                for (size_t i=1; i<=m_A; i++){
                     SWAPn_histogram_file.open(SWAPn_histogram_names[i-1],
                                               ios::out | ios::app);
                     SWAPn_histogram_files.push_back(std::move(
@@ -938,7 +937,7 @@ int main(int argc, char** argv){
         N_beta.clear();
         last_kinks.clear();
         paths.clear();
-        for (int r=0;r<num_replicas;r++){
+        for (size_t r=0;r<num_replicas;r++){
             num_kinks.push_back(M);
             N_tracker.push_back(N);
             head_idx.push_back(-1);
@@ -947,7 +946,7 @@ int main(int argc, char** argv){
             N_beta.push_back(N);
             
             last_kinks.push_back(vector<int> (M,-1));
-            for (int i=0;i<M;i++){last_kinks[r][i]=i;}
+            for (size_t i=0;i<M;i++){last_kinks[r][i]=i;}
             
             paths.push_back(create_paths(initial_fock_state,M,r));
         }
@@ -998,7 +997,7 @@ int main(int argc, char** argv){
     
     // Initialize vector estimators (conventional or SWAP)
     if (num_replicas<2) { // conventional vector estimators
-        for (int r=0;r<num_replicas;r++){
+        for (size_t r=0;r<num_replicas;r++){
             tr_kinetic_energy.push_back(vector<double>
                                         (measurement_centers.size(),0.0));
             tr_diagonal_energy.push_back(vector<double>
@@ -1006,17 +1005,17 @@ int main(int argc, char** argv){
         }
     }
     else { // SWAP vector estimators
-        for (int i=0; i<=m_A; i++){
+        for (size_t i=0; i<=m_A; i++){
             SWAP_histogram.push_back(0); // just initializing
         }
         if (!no_accessible){
-            for (int i=1; i<=m_A; i++){
+            for (size_t i=1; i<=m_A; i++){
                 SWAPn_histograms.push_back(vector<int> (N+1,0));
             }
-            for (int i=1; i<=m_A; i++){
+            for (size_t i=1; i<=m_A; i++){
                 Pn.push_back(vector<int> (N+1,0));
             }
-            for (int i=1; i<=m_A; i++){
+            for (size_t i=1; i<=m_A; i++){
                 Pn_squared.push_back(vector<int> (N+1,0));
             }
         }
@@ -1036,7 +1035,7 @@ int main(int argc, char** argv){
     
     while(bins_written<bins_wanted){
 
-    for (int r=0;r<num_replicas;r++){
+    for (size_t r=0;r<num_replicas;r++){
         
         label = rng_ptr->randInt(14);
                 
@@ -1292,7 +1291,7 @@ int main(int argc, char** argv){
                         
                         // Round out N_tracker since it might have
                         // floating point errors after a while
-                        for (int r=0; r<num_replicas; r++){
+                        for (size_t r=0; r<num_replicas; r++){
                             N_tracker[r] = round(N_tracker[r]);
                         }
                         
@@ -1304,7 +1303,7 @@ int main(int argc, char** argv){
                         
                         if (measure_tau_resolved_estimators){
                         // Save tau resolved estimators
-                        for (int i=0; i<measurement_centers.size(); i++){
+                        for (size_t i=0; i<measurement_centers.size(); i++){
                             tr_kinetic_energy_file[r]<<fixed<<setprecision(17)<<
                             tr_kinetic_energy[r][i]/bin_size << " ";
                             
@@ -1373,14 +1372,14 @@ int main(int argc, char** argv){
                         if (!no_accessible){
                         // Build subsystem particle number distribution P(n)
                         if (num_swaps==0){
-                            for (int REP=0; REP<num_replicas; REP++){
+                            for (size_t REP=0; REP<num_replicas; REP++){
                                 std::fill(n_A[REP].begin(),
                                           n_A[REP].end(),0);
                                 get_fock_state(beta/2.0,M,
                                                fock_state_at_half_plus[REP],
                                                paths[REP]);
                                 n_A_last=0; // tracks subsystem n
-                                for (int m_A_primed=1; m_A_primed<=m_A; m_A_primed++){
+                                for (size_t m_A_primed=1; m_A_primed<=m_A; m_A_primed++){
                                     n_A_last+=fock_state_at_half_plus[REP][
                                         sub_sites[m_A_primed-1]];
                                     n_A[REP][m_A_primed-1]=n_A_last; // needed to eventually compare if both replicas are on same local particle number sector
@@ -1398,7 +1397,7 @@ int main(int argc, char** argv){
                             // Build P(n)^2
                             // Joint Prob Dist of both replicas having same n
                             // and no SWAP
-                            for (int m_A_primed=1; m_A_primed<=m_A; m_A_primed++){
+                            for (size_t m_A_primed=1; m_A_primed<=m_A; m_A_primed++){
                                 if (n_A[0][m_A_primed-1]==n_A[1][m_A_primed-1]){
                                     Pn_squared[m_A_primed-1][n_A[0][m_A_primed-1]]+=1;
                                 }
@@ -1412,12 +1411,12 @@ int main(int argc, char** argv){
                             // sizes m_A_primed=0 up to m_A_primed=m_A_max
                             
                             // Add count to swapped sites histogram of n-sector
-                            for (int REP=0; REP<num_replicas; REP++){ // THIS LOOP IS ACTUALLY NOT NECESSARY. If we made it here, n[0]==n[1].
+                            for (size_t REP=0; REP<num_replicas; REP++){ // THIS LOOP IS ACTUALLY NOT NECESSARY. If we made it here, n[0]==n[1].
                                 std::fill(n_A[REP].begin(),n_A[REP].end(),0);
                                 get_fock_state(beta/2.0,M,
                                                fock_state_at_half_plus[REP],paths[REP]);
                                 n_A_last=0; // tracks subsystem n
-                                for (int i=0; i<num_swaps; i++){
+                                for (size_t i=0; i<num_swaps; i++){
                                     n_A_last+=fock_state_at_half_plus[REP][sub_sites[i]];
                                     n_A[REP][i]=n_A_last;
                                 }
@@ -1440,12 +1439,12 @@ int main(int argc, char** argv){
                     
                     // Round out N_tracker since it might have
                     // floating point errors after a while
-                    for (int r=0; r<num_replicas; r++){
+                    for (size_t r=0; r<num_replicas; r++){
                         N_tracker[r] = round(N_tracker[r]);
                     }
                     
                     // Save current histogram of swapped sites to file
-                    for (int i=0; i<=m_A; i++){
+                    for (size_t i=0; i<=m_A; i++){
                         SWAP_histogram_file<<fixed<<setprecision(17)<<
                         SWAP_histogram[i] << " ";
                     }
@@ -1457,8 +1456,8 @@ int main(int argc, char** argv){
                     
                     if (!no_accessible){
                          // Save current swapped-resolved Pn to file
-                         for (int i=1; i<=m_A; i++){
-                             for (int j=0; j<=N; j++){
+                         for (size_t i=1; i<=m_A; i++){
+                             for (size_t j=0; j<=N; j++){
                                  Pn_files[i-1]<<
                                  fixed<<setprecision(17)<<
                                  Pn[i-1][j]<<" ";
@@ -1471,8 +1470,8 @@ int main(int argc, char** argv){
                          }
                         
                         // Save current swapped-resolved Pn^2 to file
-                        for (int i=1; i<=m_A; i++){
-                            for (int j=0; j<=N; j++){
+                        for (size_t i=1; i<=m_A; i++){
+                            for (size_t j=0; j<=N; j++){
                                 Pn_squared_files[i-1]<<
                                 fixed<<setprecision(17)<<
                                 Pn_squared[i-1][j]<<" ";
@@ -1486,8 +1485,8 @@ int main(int argc, char** argv){
                         }
                         
                         // Save current n-resolved swapped sites histogram to file
-                        for (int i=1; i<=m_A; i++){
-                            for (int j=0; j<=N; j++){
+                        for (size_t i=1; i<=m_A; i++){
+                            for (size_t j=0; j<=N; j++){
                                 SWAPn_histogram_files[i-1]<<
                                 fixed<<setprecision(17)<<
                                 SWAPn_histograms[i-1][j]<<" ";
@@ -1537,7 +1536,7 @@ int main(int argc, char** argv){
         
     // Close data files
     if (num_replicas<2){
-        for (int r=0;r<num_replicas;r++){
+        for (size_t r=0;r<num_replicas;r++){
             kinetic_energy_file.close();
             diagonal_energy_file.close();
             if (measure_tau_resolved_estimators){
@@ -1549,7 +1548,7 @@ int main(int argc, char** argv){
     else {
         SWAP_histogram_file.close();
         if (!no_accessible){
-            for (int i=1; i<=m_A; i++){
+            for (size_t i=1; i<=m_A; i++){
                 Pn_files[i-1].close();
                 Pn_squared_files[i-1].close();
                 SWAPn_histogram_files[i-1].close();
@@ -1660,13 +1659,13 @@ int main(int argc, char** argv){
 //
 //                            cout << "exit m: " << m << endl;
 //                            cout << "SWAP histogram (exit): ";
-//                            for (int i=0; i<=m_A; i++){
+//                            for (size_t i=0; i<=m_A; i++){
 //                                cout << SWAP_histogram[i] << " ";
 //                            }
 //                            cout << endl;
 //                            cout << "exit paths: " << endl;
-//                            for (int r=0; r<num_replicas; r++){
-//                                for (int k=0; k<num_kinks[r]; k++){
+//                            for (size_t r=0; r<num_replicas; r++){
+//                                for (size_t k=0; k<num_kinks[r]; k++){
 //                                    cout << k << ": " << paths[r][k] << endl;
 //                                }
 //                                cout << "-----------------------------------------"<< endl;
@@ -1692,8 +1691,8 @@ int main(int argc, char** argv){
 //                            " " << N_beta[1] << endl;
 //                            cout << "num_swaps(exit): " << num_swaps << endl;
 //                            cout << "last_kinks(exit): ";
-//                            for (int r=0; r<num_replicas; r++){
-//                                for (int site=0; site<M; site++){
+//                            for (size_t r=0; r<num_replicas; r++){
+//                                for (size_t site=0; site<M; site++){
 //                                    cout << last_kinks[r][site] << " ";
 //                                }
 //                            }
@@ -1720,16 +1719,16 @@ int main(int argc, char** argv){
 //                    " " << N_beta[1] << endl;
 //                    cout << "num_swaps after restart: " << num_swaps << endl;
 //                    cout << "last_kinks after restart: " << endl;
-//                    for (int r=0; r<num_replicas; r++){
-//                        for (int site=0; site<M; site++){
+//                    for (size_t r=0; r<num_replicas; r++){
+//                        for (size_t site=0; site<M; site++){
 //                            cout << last_kinks[r][site] << " ";
 //                        }
 //                        cout << endl << "-----------------------------------------"<< endl;
 //                    }
 //
 //                    cout << "restarted paths: " << endl;
-//                    for (int r=0; r<num_replicas; r++){
-//                        for (int k=0; k<num_kinks[r]; k++){
+//                    for (size_t r=0; r<num_replicas; r++){
+//                        for (size_t k=0; k<num_kinks[r]; k++){
 //                            cout << k << ": " << paths[r][k] << endl;
 //                        }
 //                        cout << "-----------------------------------------"<< endl;

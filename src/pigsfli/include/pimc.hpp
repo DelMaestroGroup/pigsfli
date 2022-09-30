@@ -81,7 +81,7 @@ ostream& operator<<(ostream& os, const Kink& dt)
 void decToBinary(int n)
 {
     // Size of an integer is assumed to be 32 bits
-    for (int i = 31; i >= 0; i--) {
+    for (size_t i = 31; i >= 0; i--) {
         int k = n >> i;
         if (k & 1)
             cout << "1";
@@ -98,7 +98,7 @@ int binaryToDecimal(vector<int> binary_word){
     int decimal=0;
     bool bit;
     
-    for (int i=0;i<binary_word.size();i++){
+    for (size_t i=0;i<binary_word.size();i++){
         bit = binary_word[i];
         if (bit){
             decimal += pow(2,binary_word.size()-(i+1));
@@ -121,13 +121,13 @@ vector<int> random_boson_config(int M,int N,RNG &rng,bool restart){
     
     if (!restart){
         // Randomly sprinkle the N particles among sites
-        for (int n=1; n<=N; n++){
+        for (size_t n=1; n<=N; n++){
             src = rng.randInt(M-1);
             alpha[src] += 1;
         }
     }
     else{ //restart
-        for (int n=1; n<=N; n++){
+        for (size_t n=1; n<=N; n++){
             src = 1; // Throw all particles on first site for now.
             alpha[src] += 1;
         }
@@ -149,7 +149,7 @@ vector<Kink> create_paths(vector<int> &fock_state,int M,int replica_idx){
     vector<Kink> paths(num_empty_kinks,Kink(-1.0,-1,-1,-1,-1,-1,-1,-1));
 
     // Initialize the first M=L^D kinks
-    for (int site=0; site<M; site++){
+    for (size_t site=0; site<M; site++){
         paths[site] = Kink(0.0,fock_state[site],site,site,-1,-1,
                            replica_idx,replica_idx);
     }
@@ -184,14 +184,14 @@ ofstream save_paths(int D, int L, int N, int l_A,
     // Find how many active kinks are in the replica with the most
     // active kinks
     int max_num_kinks=-1;
-    for (int r=0; r<num_replicas; r++){
+    for (size_t r=0; r<num_replicas; r++){
         if (num_kinks[r]>max_num_kinks){max_num_kinks=num_kinks[r];}
     }
     
     // First 8 attributes: first replica
     // Next 8 attributes: second replicas
-    for (int k=0; k<max_num_kinks; k++){
-        for (int r=0; r<num_replicas; r++){
+    for (size_t k=0; k<max_num_kinks; k++){
+        for (size_t r=0; r<num_replicas; r++){
 
             if (k<num_kinks[r]){
             state_file<<fixed<<setprecision(17)<<paths[r][k].tau<<" ";
@@ -550,8 +550,8 @@ vector<double> get_N_tracker(vector<vector<Kink> > paths,
     double l_path,dN;
     int current,next;
 
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             current=site;
             next=paths[r][current].next;
             while (next!=-1){
@@ -583,8 +583,8 @@ vector<int> get_head_idx(vector<vector<Kink> > paths,
     int current,next;
     
     
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             current=site;
             next=paths[r][current].next;
             while (next!=-1){
@@ -611,8 +611,8 @@ vector<int> get_tail_idx(vector<vector<Kink> > paths,
     vector<int> tail_idx (num_replicas,-1);
     int current,next;
     
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             current=site;
             next=paths[r][current].next;
             while (next!=-1){
@@ -637,8 +637,8 @@ vector<int> get_N_zero(vector<vector<Kink> > paths,
 
     vector<int> N_zero(num_replicas,0);
     
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             N_zero[r] += paths[r][site].n;
         }
     }
@@ -653,8 +653,8 @@ vector<int> get_N_beta(vector<vector<Kink> > paths,
     vector<int> N_beta(num_replicas,0);
     int current,next;
     
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             current=site;
             next=paths[r][current].next;
             while (next!=-1){
@@ -675,8 +675,8 @@ vector<vector<int> > get_last_kinks(vector<vector<Kink> > paths,
     vector<vector<int> > last_kinks(num_replicas,vector<int> (M,-1));
     int current,next;
     
-    for (int r=0; r<num_replicas; r++){
-        for (int site=0; site<M; site++){
+    for (size_t r=0; r<num_replicas; r++){
+        for (size_t site=0; site<M; site++){
             current=site;
             next=paths[r][current].next;
             while (next!=-1){
@@ -699,7 +699,7 @@ int get_num_swaps(vector<vector<Kink> > paths,
     
     num_swaps = 0;
     
-    for (int site=0; site<M; site++){
+    for (size_t site=0; site<M; site++){
         current=site;
         next=paths[0][current].next;
         while (next!=-1){
@@ -721,7 +721,7 @@ double norm(vector<double> point){
     
     double squared_sum=0;
         
-    for (int i=0; i<point.size(); i++){
+    for (size_t i=0; i<point.size(); i++){
         squared_sum += point[i]*point[i];
     }
     
@@ -743,9 +743,9 @@ void build_hypercube_adjacency_matrix(int L,int D, string boundary_condition,
     bottom_row_ctr=0;
     
     // Initialize adjacency matrix with placeholder zeroes
-    for (int i=0; i<M; i++){adjacency_matrix.push_back(rows);}
+    for (size_t i=0; i<M; i++){adjacency_matrix.push_back(rows);}
     
-    for (int site=0; site<M; site++){
+    for (size_t site=0; site<M; site++){
         
         // Left neighbor
         if (site%L==0){site_left=site+(L-1);}
@@ -827,14 +827,14 @@ void build_adjacency_matrix(int L,int D,string boundary_condition,
     // Build the lattice vectors
     ctr = 0;
     if (D==1){
-        for (int i1=0; i1<L; i1++){
+        for (size_t i1=0; i1<L; i1++){
             points[ctr][0] = i1*a1;
             ctr++;
         }
     }
     else if (D==2){
-        for (int i1=0; i1<L; i1++){
-            for (int i2=0; i2<L; i2++){
+        for (size_t i1=0; i1<L; i1++){
+            for (size_t i2=0; i2<L; i2++){
                 points[ctr][0] = i1*a1;
                 points[ctr][1] = i2*a2;
                 ctr++;
@@ -842,9 +842,9 @@ void build_adjacency_matrix(int L,int D,string boundary_condition,
         }
     }
     else{ // D==3
-        for (int i1=0; i1<L; i1++){
-            for (int i2=0; i2<L; i2++){
-                for (int i3=0; i3<L; i3++){
+        for (size_t i1=0; i1<L; i1++){
+            for (size_t i2=0; i2<L; i2++){
+                for (size_t i3=0; i3<L; i3++){
                     points[ctr][0] = i1*a1;
                     points[ctr][1] = i2*a2;
                     points[ctr][2] = i3*a3;
@@ -858,9 +858,9 @@ void build_adjacency_matrix(int L,int D,string boundary_condition,
     r_NN = a1;
     
     // Set adjacency matrix elements by comparing inter-site distances
-    for (int i=0; i<M; i++){
-        for (int j=i+1; j<M; j++){
-            for (int axis=0; axis<D; axis++){
+    for (size_t i=0; i<M; i++){
+        for (size_t j=i+1; j<M; j++){
+            for (size_t axis=0; axis<D; axis++){
                 points_difference[axis] = points[i][axis]-points[j][axis];
             }
             if (boundary_condition=="pbc"){
@@ -892,7 +892,7 @@ void create_sub_sites(vector<int> &sub_sites,int l_max,int L,int D,int M,
     horizontal_direction_old,x,y;
     
     if (D==1 || L==2){ // cluster
-        for (int i=0; i<l_max; i++){sub_sites.push_back(i);}
+        for (size_t i=0; i<l_max; i++){sub_sites.push_back(i);}
     }
     else if (D==2){
         
@@ -901,15 +901,15 @@ void create_sub_sites(vector<int> &sub_sites,int l_max,int L,int D,int M,
             ctr=0; // unused at the moment
             x=0; // might not need this
             y=0;
-            for (int l=0; l<l_max; l++){
+            for (size_t l=0; l<l_max; l++){
                 next_sub_site = l;
                 sub_sites.push_back(next_sub_site);
                 
-                for (int j=1; j<=l; j++){
+                for (size_t j=1; j<=l; j++){
                     next_sub_site = l+j*L;
                     sub_sites.push_back(next_sub_site);
                     if (j==l){
-                        for (int i=1; i<=l; i++){
+                        for (size_t i=1; i<=l; i++){
                             next_sub_site -= 1;
                             sub_sites.push_back(next_sub_site);
                         }
@@ -953,7 +953,7 @@ void create_sub_sites(vector<int> &sub_sites,int l_max,int L,int D,int M,
 //    if (L>=2 && m_A>M){cout<<"ERROR: l_A needs to be smaller than L"<<endl; exit(1);}
 //
 //    if (D==1 || L==2){ // cluster
-//        for (int i=0; i<l_A; i++){sub_sites.push_back(i);}
+//        for (size_t i=0; i<l_A; i++){sub_sites.push_back(i);}
 //    }
 //    else if (D==2){
 
@@ -7192,21 +7192,21 @@ paths[src_replica][paths[src_replica][num_kinks_src-1].prev].next=worm_end_idx;
                 N_tracker[dest_replica] += dN_dest;
                 
 //                cout<<"Receded head over swap AFTER (left/right fock state)"<<endl;
-//                for (int i=0; i<1; i++){
+//                for (size_t i=0; i<1; i++){
 //                    cout<<paths[src_replica][paths[src_replica][prev_src].prev].n;
 //                }
 //                cout << " || ";
-//                for (int i=0; i<1; i++){
+//                for (size_t i=0; i<1; i++){
 //                    cout<<paths[src_replica][prev_src].n;
 //                }
 //
 //                cout << "    ";
 //
-//                for (int i=0; i<1; i++){
+//                for (size_t i=0; i<1; i++){
 //                    cout<<paths[dest_replica][num_kinks_dest].n;
 //                }
 //                cout << " || ";
-//                for (int i=0; i<1; i++){
+//                for (size_t i=0; i<1; i++){
 //                    cout<<paths[dest_replica][kink_out_of_dest].n;
 //                }
 //
@@ -7564,7 +7564,7 @@ void get_fock_state(double measurement_center, int M,
     double tau;
     int current,n_i;
     
-    for (int i=0; i<M; i++){
+    for (size_t i=0; i<M; i++){
         current=i;
         tau = paths[current].tau;
         while (tau<measurement_center+1.0E-12 && current!=-1){
@@ -7589,7 +7589,7 @@ vector<double> get_measurement_centers(double beta){
     
     num_centers=25; // use odd number please.
     tau_center=beta/(2*num_centers);
-    for (int i=0; i<num_centers; i++){
+    for (size_t i=0; i<num_centers; i++){
         measurement_centers.push_back(tau_center);
         tau_center+=(beta/(num_centers));
     }
@@ -7605,7 +7605,7 @@ double pimc_diagonal_energy(vector<int> &fock_state_at_slice, int M,
     int n_i;
         
     diagonal_energy=0.0;
-    for (int i=0; i<M; i++){
+    for (size_t i=0; i<M; i++){
         n_i = fock_state_at_slice[i];
         if (canonical)
             diagonal_energy += (U/2.0*n_i*(n_i-1));
@@ -7627,11 +7627,11 @@ void tau_resolved_diagonal_energy(vector<Kink> &paths,
     double tau,measurement_center;
     int current,n_i;
     
-    for (int i=0; i<M; i++){
+    for (size_t i=0; i<M; i++){
         current=i;
         tau=paths[current].tau;
         n_i=paths[current].n;
-        for (int j=0; j<measurement_centers.size(); j++){
+        for (size_t j=0; j<measurement_centers.size(); j++){
             measurement_center=measurement_centers[j];
             while (tau<=measurement_center && current!=-1){
                 n_i=paths[current].n;
@@ -7658,7 +7658,7 @@ double pimc_kinetic_energy(vector<Kink> &paths, int num_kinks,
     
     int kinks_in_window=0;
     
-    for (int k=0; k<num_kinks; k++){
+    for (size_t k=0; k<num_kinks; k++){
         if (paths[k].tau>=measurement_center-measurement_plus_minus
             && paths[k].tau<=measurement_center+measurement_plus_minus){
             kinks_in_window+=1;
@@ -7679,10 +7679,10 @@ void tau_resolved_kinetic_energy(vector<Kink> &paths,
 
     window_width = measurement_centers[2]-measurement_centers[1];
     
-    for (int i=M; i<num_kinks; i++){ // Note: the tau=0 kinks not counted
+    for (size_t i=M; i<num_kinks; i++){ // Note: the tau=0 kinks not counted
         tau = paths[i].tau;
 
-        for (int j=0; j<measurement_centers.size(); j++){
+        for (size_t j=0; j<measurement_centers.size(); j++){
             measurement_center=measurement_centers[j];
 
             if (tau>=measurement_center-window_width/2.0 &&

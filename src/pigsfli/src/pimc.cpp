@@ -294,7 +294,7 @@ int main(int argc, char** argv){
     // Adjacency matrix
     build_hypercube_adjacency_matrix(L,D,boundary_condition,adjacency_matrix);
     total_nn=0;
-    for (int i=0;i<adjacency_matrix[0].size();i++){total_nn+=1;}
+    for (size_t i=0;i<adjacency_matrix[0].size();i++){total_nn+=1;}
     
     // Initialize energies
     diagonal_energy = 0.0;
@@ -370,23 +370,23 @@ int main(int argc, char** argv){
  Path-Integral Ground State (Monte Carlo) For Lattice Implementations
      )";
     
-//    cout << R"(
-//                                 _
-//                                ( `.
-//                  _,--------.__  ))\`.
-//              _,-"   ,::::.    `(( (  \___
-//            ,'      .:::::'      \`-\ |   `-.
-//          ,'     ___                         \
-//         /     -'   `-.               .    ;; \
-//        :::          : \    :         ~)       )-._
-//        ;::          :: |   .      .  :       /::._)
-//       ( `:          ;  :  /: .    (  :__ .,~/_.-'
-//       /__ :        .__/_ (:' ,--.  `./o `.|'
-//      ((_\`.    `:.      `-.._    `.__`._o )
-// -hrr- `-'  `""`.____,-.___/`_\______ """"`.
-//                           `-`       `-. ,\_\
-//                                        `-')";
-//
+/*    cout << R"(
+                                _
+                               ( `.
+                 _,--------.__  ))\`.
+             _,-"   ,::::.    `(( (  \___
+           ,'      .:::::'      \`-\ |   `-.
+         ,'     ___                         \
+        /     -'   `-.               .    ;; \
+       :::          : \    :         ~)       )-._
+       ;::          :: |   .      .  :       /::._)
+      ( `:          ;  :  /: .    (  :__ .,~/_.-'
+      /__ :        .__/_ (:' ,--.  `./o `.|'
+     ((_\`.    `:.      `-.._    `.__`._o )
+-hrr- `-'  `""`.____,-.___/`_\______ """"`.
+                          `-`       `-. ,\_\
+                                       `-')";
+*/
     cout << endl << endl;
 
 /*------------ Pre-equilibration 1: mu,eta calibration --------------*/
@@ -630,7 +630,7 @@ int main(int argc, char** argv){
         N_idx = N-N_min;
 
         // Fill out the histogram
-        for (int i=0;i<N_data.size();i++){
+        for (size_t i=0;i<N_data.size();i++){
             N_hist[N_data[i]-N_min]+=1;
             N_hist_sum+=1.0;
         }
@@ -638,7 +638,7 @@ int main(int argc, char** argv){
         // Build the normalized probability distribution P(N) & find its peak
         peak_idx=0;
         P_N_peak=P_N[peak_idx];
-        for (int i=0;i<P_N.size();i++){
+        for (size_t i=0;i<P_N.size();i++){
             P_N[i]=N_hist[i]/N_hist_sum;
             if (P_N[i]>P_N_peak){
                 peak_idx=i;
@@ -650,7 +650,7 @@ int main(int argc, char** argv){
         cout << "mu: " << mu;
         cout << " eta: " << eta << " Z-frac: " << Z_frac*100 << "%" << endl;
         cout << "N     P(N)"<<endl;
-        for (int i=0;i<N_bins.size();i++){
+        for (size_t i=0;i<N_bins.size();i++){
             cout << setw(6) << left << N_bins[i];
             for (int j=0;j<=static_cast<int>(100*P_N[i]);j++){
                 cout<<"*";
@@ -1303,7 +1303,7 @@ int main(int argc, char** argv){
                         
                         if (measure_tau_resolved_estimators){
                         // Save tau resolved estimators
-                        for (int i=0; i<measurement_centers.size(); i++){
+                        for (size_t i=0; i<measurement_centers.size(); i++){
                             tr_kinetic_energy_file[r]<<fixed<<setprecision(17)<<
                             tr_kinetic_energy[r][i]/bin_size << " ";
                             
